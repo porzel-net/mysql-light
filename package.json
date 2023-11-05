@@ -1,0 +1,27 @@
+{
+  "name": "mysql-light",
+  "version": "1.0.0",
+  "description": "A lightweight MySQL driver for Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/porzel-net/mysql-light.git"
+  },
+  "keywords": [
+    "light",
+    "lightweight",
+    "mysql",
+    "mysql",
+    "driver",
+    "mysql-promise"
+  ],
+  "author": "Julius Porzel",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/porzel-net/mysql-light/issues"
+  },
+  "homepage": "https://github.com/porzel-net/mysql-light#readme"
+}
