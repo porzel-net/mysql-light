@@ -299,7 +299,11 @@ class Clauses {
             values = Object.entries(values).map(([key, value]) => {
                 if (value instanceof Buffer) {
                     value = `X'${value.toString("hex")}'`
-                } else if (typeof value === "string") {
+
+                } else if (typeof value === "boolean") {
+                    value = `${(value) ? "TRUE" : "FALSE"}`;
+                }
+                else if (typeof value === "string") {
                     value = `"${value}"`;
                 } else if (value === undefined || value === null) {
                     value = "NULL";
