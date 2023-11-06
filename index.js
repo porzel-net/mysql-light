@@ -11,7 +11,7 @@ class Database {
     constructor(host, user, password, database) {
         return mysql.createConnection({ host: host, user: user, password: password, database: database })
             .then(connection => this.connection = connection)
-            .catch(error => Promise.reject(`An error occurred while connecting to the MySQL database "${database}" with user "${user}" and password "${Array.from(password).reduce((sum, x) => sum + "*", "")}" on host "${host}:\n${error}`))
+            .catch(error => Promise.reject(`An error occurred while connecting to the MySQL database "${database}" with user "${user}" and password "${Array.from(password).reduce((sum) => sum + "*", "")}" on host "${host}:\n${error}`))
     }
 
     /**
@@ -134,7 +134,6 @@ class Clauses {
 
         if (queryObject.type === "UPDATE") {
             functions = {
-                ...functions,
                 set: (values) => Clauses.set(queryObject, values)
             }
         }
@@ -276,6 +275,16 @@ class Clauses {
     }
 
     /**
+     * Add an object with key-value pairs to the INSERT query object.
+     * @param {Object} queryObject - The query object to add the object data to.
+     * @param {Object} object - An object with key-value pairs to be inserted into the table.
+     * @returns {Object} - The updated INSERT query object with the added data to be inserted.
+     */
+    static object(queryObject, object) {
+        return Clauses.columns(queryObject, Object.keys(object)).values(Object.values(object));
+    }
+
+    /**
      * Add a set of key-value pairs to the query object using the SET clause.
      * @param {Object} queryObject - The query object to add the SET clause to.
      * @param {Object} values - An object with key-value pairs to set in the query.
@@ -310,6 +319,26 @@ class Clauses {
             where: (where) => Clauses.where(queryObject, where),
             execute: () => Clauses.execute(queryObject),
             limit: (limit) => Clauses.limit(queryObject, limit),
+        }
+    }
+
+    /**
+     * Create an INSERT query object for the specified table.
+     * @param {Object} databaseConnection - The database connection.
+     * @param {string} table - The name of the table to insert data into.
+     * @returns {Object} - An INSERT query object for the specified table.
+     */
+    static insert(databaseConnection, table) {
+        const queryObject = {
+            databaseConnection: databaseConnection,
+            type: "INSERT",
+            query: `INSERT INTO ${ table }`
+        }
+
+        return {
+            ...queryObject,
+            columns: (columns) => Clauses.columns(queryObject, columns),
+            object: (object) => Clauses.object(queryObject, object)
         }
     }
 
@@ -379,3 +408,5 @@ class Clauses {
         }
     }
 }
+
+module.exports = Database
