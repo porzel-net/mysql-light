@@ -47,9 +47,10 @@ class Clauses {
     /**
      * Execute a query object.
      * @param {Object} queryObject - The query object to execute.
+     * @returns {Promise} - A Promise, resolved with the result of the query execution.
      */
     static execute(queryObject) {
-        queryObject.databaseConnection.execute(queryObject.query)
+        return queryObject.databaseConnection.execute(queryObject.query)
     }
 
     /**
