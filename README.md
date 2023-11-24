@@ -74,6 +74,38 @@ query.execute()
     });
 ```
 
+### execute(query)
+
+Execute a raw SQL query on the connected database.
+
+```javascript
+const query = 'SELECT * FROM users';
+
+db.execute(query)
+    .then(results => {
+        // Handle the query results
+    })
+    .catch(error => {
+        // Handle any errors
+    });
+```
+
+### executeTransaction(query)
+
+Execute a transactional SQL query on the connected database.
+
+```javascript
+const query = 'UPDATE users SET age = 30 WHERE id = 1';
+
+db.executeTransaction(query)
+    .then(() => {
+        // Handle the query execution
+    })
+    .catch(error => {
+        // Handle any errors or rolled back transactions
+    });
+```
+
 ## License
 
 This library is licensed under the MIT License.

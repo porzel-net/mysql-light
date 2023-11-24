@@ -41,6 +41,32 @@ class Database {
     update(table) {
         return Clauses.update(this.connection, table)
     }
+
+    /**
+     * Execute a raw SQL query on the connected database.
+     * @param {string} query - The SQL query to execute.
+     * @returns {Promise} - A Promise that resolves with the result of the query.
+     */
+    execute(query) {
+        return this.connection.execute(query)
+    }
+
+    /**
+     * Execute a transactional SQL query on the connected database.
+     * @param {string} query - The SQL query to execute within the transaction.
+     * @returns {Promise} - A Promise that resolves if the transaction is successful,
+     *                     and rejects if there is an error or the transaction is rolled back.
+     * @throws {Error} - If an error occurs during the transaction, an error is thrown.
+     */
+    executeTransaction(query) {
+        const transaction = this.connection.beginTransaction()
+            .then(data => this.connection.execute(query))
+
+        transaction
+            .catch(() => this.connection.rollback())
+
+        return transaction;
+    }
 }
 
 class Clauses {
