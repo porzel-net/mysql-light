@@ -60,7 +60,7 @@ class Database {
      */
     executeTransaction(query) {
         const transaction = this.connection.beginTransaction()
-            .then(data => this.connection.execute(query))
+            .then(() => this.connection.execute(query))
 
         transaction
             .catch(() => this.connection.rollback())
