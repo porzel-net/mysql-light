@@ -9,10 +9,28 @@ class Database {
      * @param {string} database - The name of the database to connect to.
      */
     constructor(host, user, password, database) {
-        return mysql.createConnection({ host: host, user: user, password: password, database: database })
-            .then(connection => this.connection = connection)
+        this.data = { host: host, user: user, password: password, database: database };
+        return this.connect()
+            .then(() => this.connectionAttempts = 0)
             .then(() => this)
             .catch(error => Promise.reject(`An error occurred while connecting to the MySQL database "${database}" with user "${user}" and password "${Array.from(password).reduce((sum) => sum + "*", "")}" on host "${host}:\n${error}`))
+    }
+
+    connect() {
+        return mysql.createConnection(this.data)
+            .then(connection => this.connection = connection)
+    }
+
+    activateAutomaticReconnectionAfterConnectionError(connectionAttempts) {
+        this.connection.on('error', (error) => {
+            if (error.code === 'PROTOCOL_CONNECTION_LOST' && this.connectionAttempts < connectionAttempts) {
+                this.connectionAttempts++;
+
+                this.connect()
+                    .then(() => this.connectionAttempts = 0)
+                    .catch(error => console.error(`Error during reconnection attempt ${this.connectionAttempts}: ${error}`));
+            }
+        });
     }
 
     /**
