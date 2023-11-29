@@ -73,6 +73,18 @@ class Database {
 
         return transaction;
     }
+
+    /**
+     * Closes the connection to the database.
+     * @returns {Promise} - A Promise that resolves when the connection is successfully closed, and rejects if an error occurs.
+     */
+    close() {
+        if (!this.connection) {
+            return Promise.resolve();
+        }
+
+        return this.connection.end()
+    }
 }
 
 class Clauses {
