@@ -21,18 +21,6 @@ class Database {
             .then(connection => this.connection = connection)
     }
 
-    activateAutomaticReconnectionAfterConnectionError(connectionAttempts) {
-        this.connection.on('error', (error) => {
-            if (error.code === 'PROTOCOL_CONNECTION_LOST' && this.connectionAttempts < connectionAttempts) {
-                this.connectionAttempts++;
-
-                this.connect()
-                    .then(() => this.connectionAttempts = 0)
-                    .catch(error => console.error(`Error during reconnection attempt ${this.connectionAttempts}: ${error}`));
-            }
-        });
-    }
-
     /**
      * Create a SELECT query object with specified columns.
      * @param {string|string[]} columns - The columns to select in the query.
